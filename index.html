@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Randos</title>
+
+
+	<script language="Javascript">
+		function loadFile() {
+			/* Step 1: Make instance of request object...
+			...to make HTTP request after page is loaded*/
+			request = new XMLHttpRequest();
+			console.log("1 - request object created");
+ 
+			// Step 2: Set the URL for the AJAX request to be the JSON file
+ 
+			request.open("GET", "https://randomuser.me/api/?results=20", true);
+
+			console.log("2 - opened request file");
+
+			// Step 3: set up event handler/callback
+
+			request.onreadystatechange = function() {
+
+				console.log("3 - readystatechange event fired.");
+ 
+				if (request.readyState == 4 && request.status == 200) {
+
+					// Step 5: wait for done + success
+
+					result = request.responseText;
+					users = JSON.parse(result);
+					
+					strHTML = "<ul>";
+					users.results.forEach(function(user) { 
+					  strHTML += "<li><ul><li> Name: " + user.name.first + " " + user.name.last + "</li><li> Gender: " + user.gender + "</li><li> Email: " + user.email + "</li></ul></li>";
+					}) 
+					strHTML += "</ul>";
+					document.getElementById("data").innerHTML = strHTML;  
+				}
+
+				else if (request.readyState == 4 && request.status != 200) {
+
+					document.getElementById("data").innerHTML = "Something is wrong!  Check the logs to see where this went off the rails";
+
+				}
+
+				else if (request.readyState == 3) {
+
+					document.getElementById("data").innerHTML = "Too soon!  Try again";
+
+				}
+
+			}
+		// Step 4: fire off the HTTP request
+			request.send();
+			console.log("4 - Request sent");
+
+		}
+		
+	</script>
+
+
+</head>
+	
+<body onload="loadFile()">
+
+	<h1>THE RANDOM USER PLACE</h1>
+	<div id="data">Loading...</div>
+
+	<p>I chose to use the Random User Generator API provided lovingly at <a href="https://randomuser.me">randomuser.me</a></p>
+	<p>This API randomly generates a 'user' to a somewhat uncomfortable level of detail. The developers of the API use 'User' to basically mean person. It generates not just trivial information like names, emails, and genders but addresses, direct GPS coordinates, and even photos of the person. I'm not sure how. </p>
+	<p>A default invokation of the API would generate a single random user, I chose to use a parameter interpolated into the endpoint itself as a '?' query string that generated 20 users at once.</p>
+	<p>This API has enormous potential for several reasons. It could be used to bootstrap a new social media network and provide the illusion of having many users. It could also be used as a visible 'lorem ipsum' of sorts for developing projects that require users. The data could also be used to fill a database with fake users and information for internal testing purposes. </p>
+
+
+
+</body>
+</html>
